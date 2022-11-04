@@ -6,6 +6,7 @@ Notes from Krupp 11/4:
    	- Make sure two threads can't grab the same file
 	- Save command doesn't actually create the file, we just send the command
 	- Netcat can simulate sending/receiving commands, hardcode responses from readFile function
+	- Maybe make a struct for saveFile info?
 
 
 //Pseudocode:
