@@ -1,5 +1,15 @@
 //Project for CSC-400
 
+Notes from Krupp 11/4:
+ 	- Client and server can be on one file
+   	- Client will be sending the codes
+   	- Make sure two threads can't grab the same file
+	- Save command doesn't actually create the file, we just send the command
+	- Netcat can simulate sending/receiving commands, hardcode responses from readFile function
+
+
+//Pseudocode:
+
 main(){
     input = recieveUserInput(); // recieves user input
     operation, filename, contents = inputHandler(input); // cleans the input and separates it into its specific parts (operation, filename and/or contents)
