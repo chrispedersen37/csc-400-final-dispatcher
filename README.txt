@@ -10,6 +10,7 @@ Notes from Krupp 11/4:
 
 
 //Pseudocode:
+//test
 
 main(){
     input = recieveUserInput(); // recieves user input
