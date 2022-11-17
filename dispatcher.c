@@ -1,16 +1,16 @@
 //Copy of serverWithPopupThread.c
 
 //TODO: Add client as a function  [Assigned to: ]
-//TODO: Add main code from pseudocode [Assigned to: ]
-//TODO: Add saveFile function [Assigned to: ]
+//TODO: Add main code from pseudocode [Assigned to: Zach]
+//TODO: Add saveFile function [Assigned to: Zach]
 //TODO: Add readFile function [Assigned to: ]
 //TODO: Add deleteFile function [Assigned to: ]
 //TODO: Figure out Netcat [Assigned to: ]
 
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+//#include <sys/socket.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,16 +20,58 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-#define SERVER_PORT 1072 // Change this!
+int main(int argc, char *argv[]) {
+    char buffer[256];
+    char bufferTokens[4][256];
+    char *token;
+
+    printf("Enter input: ");
+    fgets(buffer, 256, stdin);
+
+    buffer[strlen(buffer) - 1] = '\0';
+
+    for (int i = 0; i < 4; i++) {
+        char *str, *delim;
+        int index = i;
+
+        switch(index) {
+            case 0:
+                str = malloc(strlen(buffer) + 1);
+                strcpy(str, buffer);
+
+                delim = " ";
+                break;
+            case 1:
+                str = NULL;
+                delim = " ";
+                break;
+            case 2:
+                str = NULL;
+                delim = ":";
+                break;
+            case 3:
+                str = NULL;
+                delim = "";
+                break;
+        }
+
+        token = strtok(str, delim);
+        strcpy(bufferTokens[i], token);
+        printf("%s\n", bufferTokens[i]);
+    }
+}
+
+//Server Code:
+
+/* #define SERVER_PORT 1072 // Change this!
 #define BUF_SIZE 256
 
 // We make this a global so that we can refer to it in our signal handler
 int serverSocket;
 
-/*
- We need to make sure we close the connection on signal received, otherwise we have to wait
- for server to timeout.
- */
+
+ //We need to make sure we close the connection on signal received, otherwise we have to wait
+ //for server to timeout.
 void closeConnection() {
     printf("\nClosing Connection with file descriptor: %d \n", serverSocket);
     close(serverSocket);
@@ -95,11 +137,9 @@ int main(int argc, char *argv[]) {
     listen(serverSocket, 10);
 
     while (1) {
-        /*
-         Accept connection (this is blocking)
-         2nd parameter you can specify connection
-         3rd parameter is for socket length
-         */
+         //Accept connection (this is blocking)
+         //2nd parameter you can specify connection
+         //3rd parameter is for socket length
         connectionToClient = accept(serverSocket, (struct sockaddr *) NULL, NULL);
 
         // Kick off a thread to process request
@@ -107,7 +147,7 @@ int main(int argc, char *argv[]) {
         pthread_create(&someThread, NULL, processClientRequest, (void *)&connectionToClient);
 
     }
-}
+} */
 
 //Client Code:
 
