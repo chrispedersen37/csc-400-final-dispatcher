@@ -1,12 +1,11 @@
 //Copy of serverWithPopupThread.c
 
-//TODO: Add client as a function  [Assigned to: ]
+//TODO: Add client as a function  [Assigned to: Alex]
 //TODO: Add main code from pseudocode [Assigned to: Zach]
 //TODO: Add saveFile function [Assigned to: Zach]
-//TODO: Add readFile function [Assigned to: ]
-//TODO: Add deleteFile function [Assigned to: ]
-//TODO: Figure out Netcat [Assigned to: ]
-
+//TODO: Add readFile function [Assigned to: Christian]
+//TODO: Add deleteFile function [Assigned to: Alex]
+//TODO: Figure out Netcat [Assigned to: Christian]
 
 //#include <sys/socket.h>
 //#include <netinet/in.h>
@@ -21,7 +20,7 @@
 #include <semaphore.h>
 
 char** tokenizeInput(char *buffer) {
-    char **inputTokens;
+    char **inputTokens = malloc(3 * sizeof(char*));
     char *token;
 
     token = strtok(buffer, " ");
