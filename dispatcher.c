@@ -10,10 +10,9 @@
 //Cache Port: 1075
 //File Server Port: 1076
 
-
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+//#include <sys/socket.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,16 +22,59 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-#define SERVER_PORT 1072 // Change this!
+char** tokenizeInput(char *buffer) {
+    char **inputTokens = malloc(3 * sizeof(char*));
+    char *token;
+
+    token = strtok(buffer, " ");
+    inputTokens[0] = malloc(strlen(token) + 1);
+    strcpy(inputTokens[0], token);
+
+    token = strtok(NULL, " ");
+    inputTokens[1] = malloc(strlen(token) + 1);
+    strcpy(inputTokens[1], token);
+
+    token = strtok(NULL, "");
+    if (token != NULL) {
+        inputTokens[2] = malloc(strlen(token) + 1);
+        strcpy(inputTokens[2], token);
+    } else {
+        inputTokens[2] = NULL;
+    }
+
+    return inputTokens;
+}
+
+int main(int argc, char *argv[]) {
+    char buffer[256];
+    char **inputTokens;
+    char *operation, *filename, *n_contents;
+
+    printf("Enter input: ");
+    fgets(buffer, 256, stdin);
+
+    buffer[strlen(buffer) - 1] = '\0';
+
+    inputTokens = tokenizeInput(buffer);
+
+    operation = inputTokens[0];
+    filename = inputTokens[1];
+    n_contents = inputTokens[2];
+
+    printf("%s\n%s\n%s\n", operation, filename, n_contents);
+}
+
+//Server Code:
+
+/* #define SERVER_PORT 1072 // Change this!
 #define BUF_SIZE 256
 
 // We make this a global so that we can refer to it in our signal handler
 int serverSocket;
 
-/*
- We need to make sure we close the connection on signal received, otherwise we have to wait
- for server to timeout.
- */
+
+ //We need to make sure we close the connection on signal received, otherwise we have to wait
+ //for server to timeout.
 void closeConnection() {
     printf("\nClosing Connection with file descriptor: %d \n", serverSocket);
     close(serverSocket);
@@ -100,11 +142,9 @@ int main(int argc, char *argv[]) {
     listen(serverSocket, 10);
 
     while (1) {
-        /*
-         Accept connection (this is blocking)
-         2nd parameter you can specify connection
-         3rd parameter is for socket length
-         */
+         //Accept connection (this is blocking)
+         //2nd parameter you can specify connection
+         //3rd parameter is for socket length
         connectionToClient = accept(serverSocket, (struct sockaddr *) NULL, NULL);
 
         // Kick off a thread to process request
@@ -112,7 +152,7 @@ int main(int argc, char *argv[]) {
         pthread_create(&someThread, NULL, processClientRequest, (void *)&connectionToClient);
 
     }
-}
+} */
 
 //Client Code:
 
