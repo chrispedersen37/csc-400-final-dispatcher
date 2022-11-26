@@ -7,6 +7,9 @@
 //TODO: Add deleteFile function [Assigned to: Alex]
 //TODO: Figure out Netcat [Assigned to: Christian]
 
+//Cache Port: 1075
+//File Server Port: 1076
+
 //#include <sys/socket.h>
 //#include <netinet/in.h>
 //#include <arpa/inet.h>
