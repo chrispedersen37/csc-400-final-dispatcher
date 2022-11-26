@@ -10,9 +10,9 @@
 //Cache Port: 1075
 //File Server Port: 1076
 
-//#include <sys/socket.h>
-//#include <netinet/in.h>
-//#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
