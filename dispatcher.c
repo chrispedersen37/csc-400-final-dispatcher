@@ -20,45 +20,46 @@
 #include <pthread.h>
 #include <semaphore.h>
 
+char** tokenizeInput(char *buffer) {
+    char **inputTokens;
+    char *token;
+
+    token = strtok(buffer, " ");
+    inputTokens[0] = malloc(strlen(token) + 1);
+    strcpy(inputTokens[0], token);
+
+    token = strtok(NULL, " ");
+    inputTokens[1] = malloc(strlen(token) + 1);
+    strcpy(inputTokens[1], token);
+
+    token = strtok(NULL, "");
+    if (token != NULL) {
+        inputTokens[2] = malloc(strlen(token) + 1);
+        strcpy(inputTokens[2], token);
+    } else {
+        inputTokens[2] = NULL;
+    }
+
+    return inputTokens;
+}
+
 int main(int argc, char *argv[]) {
     char buffer[256];
-    char bufferTokens[4][256];
-    char *token;
+    char **inputTokens;
+    char *operation, *filename, *n_contents;
 
     printf("Enter input: ");
     fgets(buffer, 256, stdin);
 
     buffer[strlen(buffer) - 1] = '\0';
 
-    for (int i = 0; i < 4; i++) {
-        char *str, *delim;
-        int index = i;
+    inputTokens = tokenizeInput(buffer);
 
-        switch(index) {
-            case 0:
-                str = malloc(strlen(buffer) + 1);
-                strcpy(str, buffer);
+    operation = inputTokens[0];
+    filename = inputTokens[1];
+    n_contents = inputTokens[2];
 
-                delim = " ";
-                break;
-            case 1:
-                str = NULL;
-                delim = " ";
-                break;
-            case 2:
-                str = NULL;
-                delim = ":";
-                break;
-            case 3:
-                str = NULL;
-                delim = "";
-                break;
-        }
-
-        token = strtok(str, delim);
-        strcpy(bufferTokens[i], token);
-        printf("%s\n", bufferTokens[i]);
-    }
+    printf("%s\n%s\n%s\n", operation, filename, n_contents);
 }
 
 //Server Code:
