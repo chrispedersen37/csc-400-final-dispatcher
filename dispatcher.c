@@ -127,12 +127,14 @@ void closeConnection() {
     exit(1);
 }
 
-// Create a separat emethod for
+// Create a separate emethod for
 
 void * processClientRequest(void * request) {
     int connectionToClient = *(int *)request;
     char receiveLine[BUF_SIZE];
     char sendLine[BUF_SIZE];
+    char **inputTokens;
+    char *operation, *restOfInput *message;
 
     int bytesReadFromClient = 0;
     // Read the request that the client has
@@ -142,6 +144,15 @@ void * processClientRequest(void * request) {
 
         // Show what client sent
         printf("Received: %s\n", receiveLine);
+
+        // Tokenize the input
+        inputTokens = tokenizeInput(receiveLine);
+        operation = inputTokens[0];
+        restOfInput = inputTokens[1];
+
+        if (strcmp(operation, "save") == 0) {
+            
+        }
 
         // Print text out to buffer, and then write it to client (connfd)
         snprintf(sendLine, sizeof(sendLine), "true");
