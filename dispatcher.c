@@ -23,24 +23,16 @@
 #include <semaphore.h>
 
 char** tokenizeInput(char *buffer) {
-    char **inputTokens = malloc(3 * sizeof(char*));
+    char **inputTokens = malloc(2 * sizeof(char*));
     char *token;
 
     token = strtok(buffer, " ");
     inputTokens[0] = malloc(strlen(token) + 1);
     strcpy(inputTokens[0], token);
 
-    token = strtok(NULL, " ");
+    token = strtok(NULL, "");
     inputTokens[1] = malloc(strlen(token) + 1);
     strcpy(inputTokens[1], token);
-
-    token = strtok(NULL, "");
-    if (token != NULL) {
-        inputTokens[2] = malloc(strlen(token) + 1);
-        strcpy(inputTokens[2], token);
-    } else {
-        inputTokens[2] = NULL;
-    }
 
     return inputTokens;
 }
@@ -48,7 +40,7 @@ char** tokenizeInput(char *buffer) {
 int main(int argc, char *argv[]) {
     char buffer[256];
     char **inputTokens;
-    char *operation, *filename, *n_contents;
+    char *operation, *restOfInput;
 
     printf("Enter input: ");
     fgets(buffer, 256, stdin);
@@ -58,10 +50,9 @@ int main(int argc, char *argv[]) {
     inputTokens = tokenizeInput(buffer);
 
     operation = inputTokens[0];
-    filename = inputTokens[1];
-    n_contents = inputTokens[2];
+    restOfInput = inputTokens[1];
 
-    printf("%s\n%s\n%s\n", operation, filename, n_contents);
+    printf("%s\n%s\n", operation, restOfInput);
 }
 
 //Client as a function
