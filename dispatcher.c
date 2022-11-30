@@ -23,24 +23,16 @@
 #include <semaphore.h>
 
 char** tokenizeInput(char *buffer) {
-    char **inputTokens = malloc(3 * sizeof(char*));
+    char **inputTokens = malloc(2 * sizeof(char*));
     char *token;
 
     token = strtok(buffer, " ");
     inputTokens[0] = malloc(strlen(token) + 1);
     strcpy(inputTokens[0], token);
 
-    token = strtok(NULL, " ");
+    token = strtok(NULL, "");
     inputTokens[1] = malloc(strlen(token) + 1);
     strcpy(inputTokens[1], token);
-
-    token = strtok(NULL, "");
-    if (token != NULL) {
-        inputTokens[2] = malloc(strlen(token) + 1);
-        strcpy(inputTokens[2], token);
-    } else {
-        inputTokens[2] = NULL;
-    }
 
     return inputTokens;
 }
@@ -48,7 +40,7 @@ char** tokenizeInput(char *buffer) {
 int main(int argc, char *argv[]) {
     char buffer[256];
     char **inputTokens;
-    char *operation, *filename, *n_contents;
+    char *operation, *restOfInput;
 
     printf("Enter input: ");
     fgets(buffer, 256, stdin);
@@ -58,11 +50,65 @@ int main(int argc, char *argv[]) {
     inputTokens = tokenizeInput(buffer);
 
     operation = inputTokens[0];
-    filename = inputTokens[1];
-    n_contents = inputTokens[2];
+    restOfInput = inputTokens[1];
 
-    printf("%s\n%s\n%s\n", operation, filename, n_contents);
+    printf("%s\n%s\n", operation, restOfInput);
 }
+
+//Client as a function
+
+//void sendClientRequest(char *sendCommand) {
+//    int serverSocket, bytesRead;
+//
+//    // These are the buffers to talk back and forth with the server
+//    char sendLine[BUF_SIZE];
+//    char receiveLine[BUF_SIZE];
+//
+//    // Create socket to server
+//    if ( (serverSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+//        printf("Unable to create socket\n");
+//        return -1;
+//    }
+//
+//    // Setup server connection
+//    struct sockaddr_in serverAddress;
+//    bzero(&serverAddress, sizeof(serverAddress)); // Ensure address is blank
+//
+//    // Setup the type of connection and where the server is to connect to
+//    serverAddress.sin_family = AF_INET; // AF_INET - talk over a network, could be a local socket
+//    serverAddress.sin_port   = htons(SERVER_PORT); // Conver to network byte order
+//
+//    // Try to convert character representation of IP to binary
+//    if (inet_pton(AF_INET, "127.0.0.1", &serverAddress.sin_addr) <= 0) {
+//        printf("Unable to convert IP for server address\n");
+//        return -1;
+//    }
+//
+//    // Connect to server, if we cannot connect, then exit out
+//    if (connect(serverSocket, (struct sockaddr *) &serverAddress, sizeof(serverAddress)) < 0) {
+//        printf("Unable to connect to server");
+//    }
+//
+//    // snprintf allows you to write to a buffer, think of it as a formatted print into an array
+//    snprintf(sendLine, sizeof(sendLine), sendCommand);
+//
+//    // Write will actually write to a file (in this case a socket) which will transmit it to the server
+//    write(serverSocket, sendLine, strlen(sendLine));
+//
+//    // Now start reading from the server
+//    // Read will read from socket into receiveLine up to BUF_SIZE
+//    while ( (bytesRead = read(serverSocket, receiveLine, BUF_SIZE)) > 0) {
+//        receiveLine[bytesRead] = 0; // Make sure we put the null terminator at the end of the buffer
+//        printf("Received %d bytes from server with message: %s\n", bytesRead, receiveLine);
+//
+//        // Got response, get out of here
+//        break;
+//    }
+//
+//    // Close the server socket
+//    close(serverSocket);
+//}
+
 
 //Server Code:
 
