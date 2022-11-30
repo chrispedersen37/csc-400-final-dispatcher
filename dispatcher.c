@@ -41,6 +41,7 @@ int main(int argc, char *argv[]) {
     char buffer[256];
     char **inputTokens;
     char *operation, *restOfInput;
+    char message[256];
 
     printf("Enter input: ");
     fgets(buffer, 256, stdin);
@@ -52,7 +53,17 @@ int main(int argc, char *argv[]) {
     operation = inputTokens[0];
     restOfInput = inputTokens[1];
 
-    printf("%s\n%s\n", operation, restOfInput);
+    if (strcmp(operation, "save") == 0) {
+        snprintf(message, sizeof(message), "write %s", restOfInput);
+    } else if (strcmp(operation, "read") == 0) {
+        snprintf(message, sizeof(message), "load %s", restOfInput); 
+    } else if (strcmp(operation, "delete") == 0) {
+        snprintf(message, sizeof(message), "delete %s", restOfInput);
+    }
+
+    printf("%s\n", message);
+ 
+    //printf("%s\n%s\n", operation, restOfInput);
 }
 
 //Client as a function
@@ -113,6 +124,8 @@ int main(int argc, char *argv[]) {
 //Server Code:
 
 /* #define SERVER_PORT 1072 // Change this!
+#define CACHE_SERVER_PORT 1075
+#define FILE_SERVER_PORT 1076
 #define BUF_SIZE 256
 
 // We make this a global so that we can refer to it in our signal handler
@@ -133,6 +146,9 @@ void * processClientRequest(void * request) {
     int connectionToClient = *(int *)request;
     char receiveLine[BUF_SIZE];
     char sendLine[BUF_SIZE];
+    char **inputTokens;
+    char *operation, *restOfInput;
+    char message[BUF_SIZE];
 
     int bytesReadFromClient = 0;
     // Read the request that the client has
@@ -142,6 +158,20 @@ void * processClientRequest(void * request) {
 
         // Show what client sent
         printf("Received: %s\n", receiveLine);
+
+        //Tokenize Input
+        inputTokens = tokenizeInput(receiveLine);
+        operation = inputTokens[0];
+        restOfInput = inputTokens[1];
+
+        if (strcmp(operation, "save") == 0) {
+            snprintf(message, sizeof(message), "write %s", restOfInput);
+            sendClientRequest(message, FILE_SERVER_PORT, NULL)
+        } else if {
+            snprintf(message, sizeof(message), "load %s", restOfInput);
+        } else if {
+            snprintf(message, sizeof(message), "delete %s", restOfInput);
+        }
 
         // Print text out to buffer, and then write it to client (connfd)
         snprintf(sendLine, sizeof(sendLine), "true");
