@@ -63,3 +63,32 @@ deleteFile(filename){
     sendDelete(memoryCache, 'rm ' + filename); //sends API command to the Memory Cache with format 'rm filename'
     sendDelete(fileSystem, 'delete ' + filename); //sends API command to the File Server with format 'delete filename'
 }
+
+11/29 notes:
+
+server {
+	main {
+		get packets from network
+		splits up message and
+	}
+
+	client {
+
+
+		if op = save {
+			clientSend(message, fileport, NULL)
+		}
+		else if op = read {
+
+		}
+		else{
+			clientSend(message, cacheport, NULL)
+			clientSend(message, fileport, NULL)
+		}
+
+		clientSend (char * message, int port, &response){
+
+		}
+	}
+}
+
