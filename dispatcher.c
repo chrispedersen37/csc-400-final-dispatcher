@@ -149,8 +149,6 @@ void * processClientRequest(void * request) {
     char sendLine[BUF_SIZE];
     char message[BUF_SIZE];
     char **inputTokens;
-    char *operation, *restOfInput;
-    char **inputTokens;
     char *operation, *restOfInput *message;
 
     int bytesReadFromClient = 0;
@@ -163,13 +161,6 @@ void * processClientRequest(void * request) {
         printf("Received: %s\n", receiveLine);
 
         // Tokenize the input
-        inputTokens = tokenizeInput(receiveLine);
-        operation = inputTokens[0];
-        restOfInput = inputTokens[1];
-
-        if (strcmp(operation, "save") == 0) {
-            
-        //Tokenize Input
         inputTokens = tokenizeInput(receiveLine);
         operation = inputTokens[0];
         restOfInput = inputTokens[1];
