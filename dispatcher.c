@@ -7,9 +7,6 @@
 //TODO: Add deleteFile function [Assigned to: Alex]
 //TODO: Figure out Netcat [Assigned to: Christian]
 
-//Cache Port: 1075
-//File Server Port: 1076
-
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -21,6 +18,13 @@
 #include <sys/types.h>
 #include <pthread.h>
 #include <semaphore.h>
+
+#define DISPATCHER_SERVER_PORT 1072 // Change this!
+#define CACHE_SERVER_PORT 1075
+#define FILE_SERVER_PORT 1076
+#define BUF_SIZE 256
+
+int serverSocket;
 
 char** tokenizeInput(char *buffer) {
     char **inputTokens = malloc(2 * sizeof(char*));
@@ -123,14 +127,6 @@ int main(int argc, char *argv[]) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Server Code:
-/*
-#define DISPATCHER_SERVER_PORT 1072 // Change this!
-#define CACHE_SERVER_PORT 1075
-#define FILE_SERVER_PORT 1076
-#define BUF_SIZE 256
-
-// We make this a global so that we can refer to it in our signal handler
-int serverSocket;
 
 
  //We need to make sure we close the connection on signal received, otherwise we have to wait
@@ -147,7 +143,8 @@ void * processClientRequest(void * request) {
     int connectionToClient = *(int *)request;
     char receiveLine[BUF_SIZE];
     char sendLine[BUF_SIZE];
-    char message[BUF_SIZE];
+    char cacheMessage[BUF_SIZE];
+    char fileServerMessage[BUF_SIZE];
     char **inputTokens;
     char *operation, *restOfInput *message;
 
@@ -164,16 +161,27 @@ void * processClientRequest(void * request) {
         inputTokens = tokenizeInput(receiveLine);
         operation = inputTokens[0];
         restOfInput = inputTokens[1];
+        char response[1024];
 
         if (strcmp(operation, "save") == 0) {
-            snprintf(message, sizeof(message), "write %s", restOfInput);
+            snprintf(fileServerMessage, sizeof(fileServerMessage), "write %s", restOfInput);
             sendClientRequest(message, FILE_SERVER_PORT, NULL);
         } else if (strcmp(operation, "read") == 0) {
-            snprintf(message, sizeof(message), "load %s", restOfInput);
+            snprintf(cacheMessage, sizeof(cacheMessage), "load %s", restOfInput);
+            snprintf(fileServerMessage, sizeof(fileServerMessage), "read %s", restOfInput);
+            sendClientRequest(cacheMessage, CACHE_SERVER_PORT, &response);
+            if (strcmp(response, '0:') == 0) {
+                sendClientRequest(fileServerMessage, FILE_SERVER_PORT, &response);
+            }else {
+                printf(response);
+            }
+
+
         } else if (strcmp(operation, "delete") == 0) {
-            snprintf(message, sizeof(message), "delete %s", restOfInput);
-            sendClientRequest(message, FILE_SERVER_PORT, NULL);
-            sendClientRequest(message, CACHE_SERVER_PORT, NULL);
+            snprintf(fileServerMessage, sizeof(fileServerMessage), "rm %s", restOfInput);
+            snprintf(cacheMessage, sizeof(cacheMessage), "delete %s", restOfInput);
+            sendClientRequest(fileServerMessage, FILE_SERVER_PORT, NULL);
+            sendClientRequest(cacheMessage, CACHE_SERVER_PORT, NULL);
         }
 
         }
@@ -233,62 +241,5 @@ int main(int argc, char *argv[]) {
         pthread_create(&someThread, NULL, processClientRequest, (void *)&connectionToClient);
 
     }
-} */
-
-void clientSend(char * message, int port, char * response){
-
 }
 
-//Client Code:
-
-int clientSend(int argc, char *argv[]) {
-    int serverSocket, bytesRead;
-
-    // These are the buffers to talk back and forth with the server
-    char sendLine[BUF_SIZE];
-    char receiveLine[BUF_SIZE];
-
-    // Create socket to server
-    if ( (serverSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        printf("Unable to create socket\n");
-        return -1;
-    }
-
-    // Setup server connection
-    struct sockaddr_in serverAddress;
-    bzero(&serverAddress, sizeof(serverAddress)); // Ensure address is blank
-
-    // Setup the type of connection and where the server is to connect to
-    serverAddress.sin_family = AF_INET; // AF_INET - talk over a network, could be a local socket
-    serverAddress.sin_port   = htons(SERVER_PORT); // Conver to network byte order
-
-    // Try to convert character representation of IP to binary
-    if (inet_pton(AF_INET, "127.0.0.1", &serverAddress.sin_addr) <= 0) {
-        printf("Unable to convert IP for server address\n");
-        return -1;
-    }
-
-    // Connect to server, if we cannot connect, then exit out
-    if (connect(serverSocket, (struct sockaddr *) &serverAddress, sizeof(serverAddress)) < 0) {
-        printf("Unable to connect to server");
-    }
-
-    // snprintf allows you to write to a buffer, think of it as a formatted print into an array
-    snprintf(sendLine, sizeof(sendLine), "Hey Frodo!");
-
-    // Write will actually write to a file (in this case a socket) which will transmit it to the server
-    write(serverSocket, sendLine, strlen(sendLine));
-
-    // Now start reading from the server
-    // Read will read from socket into receiveLine up to BUF_SIZE
-    while ( (bytesRead = read(serverSocket, receiveLine, BUF_SIZE)) > 0) {
-        receiveLine[bytesRead] = 0; // Make sure we put the null terminator at the end of the buffer
-        printf("Received %d bytes from server with message: %s\n", bytesRead, receiveLine);
-
-        // Got response, get out of here
-        break;
-    }
-
-    // Close the server socket
-    close(serverSocket);
-}
