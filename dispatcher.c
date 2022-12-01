@@ -62,13 +62,13 @@ int main(int argc, char *argv[]) {
     }
 
     printf("%s\n", message);
- 
-    //printf("%s\n%s\n", operation, restOfInput);
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Client as a function
 
-//void sendClientRequest(char *sendCommand) {
+//void sendClientRequest(char *sendCommand, int port, char *response) {
 //    int serverSocket, bytesRead;
 //
 //    // These are the buffers to talk back and forth with the server
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
 //
 //    // Setup the type of connection and where the server is to connect to
 //    serverAddress.sin_family = AF_INET; // AF_INET - talk over a network, could be a local socket
-//    serverAddress.sin_port   = htons(SERVER_PORT); // Conver to network byte order
+//    serverAddress.sin_port   = htons(port); // Conver to network byte order
 //
 //    // Try to convert character representation of IP to binary
 //    if (inet_pton(AF_INET, "127.0.0.1", &serverAddress.sin_addr) <= 0) {
@@ -120,10 +120,11 @@ int main(int argc, char *argv[]) {
 //    close(serverSocket);
 //}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Server Code:
-
-/* #define SERVER_PORT 1072 // Change this!
+/*
+#define DISPATCHER_SERVER_PORT 1072 // Change this!
 #define CACHE_SERVER_PORT 1075
 #define FILE_SERVER_PORT 1076
 #define BUF_SIZE 256
@@ -146,9 +147,9 @@ void * processClientRequest(void * request) {
     int connectionToClient = *(int *)request;
     char receiveLine[BUF_SIZE];
     char sendLine[BUF_SIZE];
+    char message[BUF_SIZE];
     char **inputTokens;
     char *operation, *restOfInput;
-    char message[BUF_SIZE];
 
     int bytesReadFromClient = 0;
     // Read the request that the client has
@@ -166,11 +167,13 @@ void * processClientRequest(void * request) {
 
         if (strcmp(operation, "save") == 0) {
             snprintf(message, sizeof(message), "write %s", restOfInput);
-            sendClientRequest(message, FILE_SERVER_PORT, NULL)
-        } else if {
+            sendClientRequest(message, FILE_SERVER_PORT, NULL);
+        } else if (strcmp(operation, "read") == 0) {
             snprintf(message, sizeof(message), "load %s", restOfInput);
-        } else if {
+        } else if (strcmp(operation, "delete") == 0) {
             snprintf(message, sizeof(message), "delete %s", restOfInput);
+            sendClientRequest(message, FILE_SERVER_PORT, NULL);
+            sendClientRequest(message, CACHE_SERVER_PORT, NULL);
         }
 
         // Print text out to buffer, and then write it to client (connfd)
@@ -228,7 +231,9 @@ int main(int argc, char *argv[]) {
     }
 } */
 
-//Client Code:
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Original Client Code:
 
 //int main(int argc, char *argv[]) {
 //    int serverSocket, bytesRead;
