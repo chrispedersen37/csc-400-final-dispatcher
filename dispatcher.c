@@ -108,14 +108,16 @@ void sendClientRequest(char *sendCommand, int port, char *response) {
    // Write will actually write to a file (in this case a socket) which will transmit it to the server
    write(serverSocket, sendCommand, strlen(sendCommand));
 
-   // Now start reading from the server
-   // Read will read from socket into receiveLine up to BUF_SIZE
-   while ( (bytesRead = read(serverSocket, receiveLine, BUF_SIZE)) > 0) {
-       receiveLine[bytesRead] = 0; // Make sure we put the null terminator at the end of the buffer
-       printf("Received %d bytes from server with message: %s\n", bytesRead, receiveLine);
-
-       // Got response, get out of here
-       break;
+   if (response != NULL) {
+       // Now start reading from the server
+       // Read will read from socket into receiveLine up to BUF_SIZE
+       while ( (bytesRead = read(serverSocket, receiveLine, BUF_SIZE)) > 0) {
+           receiveLine[bytesRead] = 0; // Make sure we put the null terminator at the end of the buffer
+           printf("Received %d bytes from server with message: %s\n", bytesRead, receiveLine);
+           strcpy(response, receiveLine);
+           // Got response, get out of here
+           break;
+       }
    }
 
    // Close the server socket
