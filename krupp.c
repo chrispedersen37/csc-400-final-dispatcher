@@ -49,6 +49,8 @@ int main(int argc, char *argv[]) {
     char **inputTokens;
     char *operation, *restOfInput;
     char message[256];
+    char cacheMessage[256];
+    char fileServerMessage[256];
 
     printf("Enter input: ");
     fgets(buffer, 256, stdin);
@@ -63,10 +65,18 @@ int main(int argc, char *argv[]) {
     if (strcmp(operation, "save") == 0) {
         snprintf(message, sizeof(message), "write %s", restOfInput);
     } else if (strcmp(operation, "read") == 0) {
-        snprintf(message, sizeof(message), "load %s", restOfInput);
+        char response[256];
+        snprintf(cacheMessage, sizeof(cacheMessage), "load %s", restOfInput);
+        snprintf(fileServerMessage, sizeof(fileServerMessage), "read %s", restOfInput);
+        sendClientRequest(cacheMessage, CACHE_SERVER_PORT, &response);
+        if (strcmp(response, "0:") == 0) {
+            sendClientRequest(fileServerMessage, FILE_SERVER_PORT, &response);
+            sendClientRequest(response, DISPATCHER_SERVER_PORT, NULL);
+        } else {
+            sendClientRequest(response, DISPATCHER_SERVER_PORT, NULL);
+        }
     } else if (strcmp(operation, "delete") == 0) {
         snprintf(message, sizeof(message), "delete %s", restOfInput);
-        char response[256];
         sendClientRequest("delete fs", 1085, NULL);
         sendClientRequest("delete ms", 1086, NULL);
     }
@@ -123,12 +133,13 @@ void sendClientRequest(char *sendCommand, int port, char *response) {
         while ( (bytesRead = read(serverSocket, receiveLine, BUF_SIZE)) > 0) {
             receiveLine[bytesRead] = 0; // Make sure we put the null terminator at the end of the buffer
             printf("Received %d bytes from server with message: %s\n", bytesRead, receiveLine);
-
+            *response = "response";
+            printf(*response);
+            //strcpy(*response, receiveLine);
             // Got response, get out of here
             break;
         }
     }
-
 
     // Close the server socket
     close(serverSocket);
@@ -148,4 +159,3 @@ void closeConnection() {
 }
 
 // Create a separate method for
-
