@@ -31,34 +31,6 @@ char** tokenizeInput(char *buffer) {
 
     return inputTokens;
 }
-/*
-int main(int argc, char *argv[]) {
-    char buffer[256];
-    char **inputTokens;
-    char *operation, *restOfInput;
-    char message[256];
-
-    printf("Enter input: ");
-    fgets(buffer, 256, stdin);
-
-    buffer[strlen(buffer) - 1] = '\0';
-
-    inputTokens = tokenizeInput(buffer);
-
-    operation = inputTokens[0];
-    restOfInput = inputTokens[1];
-
-    if (strcmp(operation, "save") == 0) {
-        snprintf(message, sizeof(message), "write %s", restOfInput);
-    } else if (strcmp(operation, "read") == 0) {
-        snprintf(message, sizeof(message), "load %s", restOfInput);
-    } else if (strcmp(operation, "delete") == 0) {
-        snprintf(message, sizeof(message), "delete %s", restOfInput);
-    }
-
-    printf("%s\n", message);
-}
-*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -170,10 +142,10 @@ void * processClientRequest(void * request) {
             if (strcmp(response, "0:\n") == 0) {
                 printf("sending to fs...");
                 sendClientRequest(fileServerMessage, FILE_SERVER_PORT, response);
-                sendClientRequest(response, DISPATCHER_SERVER_PORT, NULL);
+                write(connectionToClient, response, strlen(response));
             } else if (strcmp(response, "0:\n") != 0) {
                 printf("sending to network...");
-                sendClientRequest(response, DISPATCHER_SERVER_PORT, NULL);
+                write(connectionToClient, response, strlen(response));
             }
             printf("response was: %s", response);
         } else if (strcmp(operation, d) == 0) {
@@ -185,18 +157,10 @@ void * processClientRequest(void * request) {
         printf("skipped sending :(");
     }
 
-    // Print text out to buffer, and then write it to client (connfd)
-    snprintf(sendLine, sizeof(sendLine), "true");
-
-    printf("Sending %s\n", sendLine);
-    write(connectionToClient, sendLine, strlen(sendLine));
-
     // Zero out the receive line so we do not get artifacts from before
     bzero(&receiveLine, sizeof(receiveLine));
     close(connectionToClient);
 }
-
-
 
 
 int main(int argc, char *argv[]) {
@@ -241,4 +205,3 @@ int main(int argc, char *argv[]) {
 
     }
 }
-
