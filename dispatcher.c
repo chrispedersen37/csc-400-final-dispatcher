@@ -10,9 +10,9 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-#define DISPATCHER_SERVER_PORT 1073 // Change this!
-#define CACHE_SERVER_PORT 1078
-#define FILE_SERVER_PORT 1079
+#define DISPATCHER_SERVER_PORT 1072 // Change this!
+#define CACHE_SERVER_PORT 1075
+#define FILE_SERVER_PORT 1076
 #define BUF_SIZE 256
 
 int serverSocket;
