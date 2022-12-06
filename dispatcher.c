@@ -1,3 +1,4 @@
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -147,8 +148,8 @@ void * processClientRequest(void * request) {
                 write(connectionToClient, response, strlen(response));
             }
         } else if (strcmp(operation, d) == 0) {
-            snprintf(fileServerMessage, sizeof(fileServerMessage), "rm %s", restOfInput);
-            snprintf(cacheMessage, sizeof(cacheMessage), "delete %s", restOfInput);
+            snprintf(fileServerMessage, sizeof(fileServerMessage), "delete %s", restOfInput);
+            snprintf(cacheMessage, sizeof(cacheMessage), "rm %s", restOfInput);
             sendClientRequest(fileServerMessage, FILE_SERVER_PORT, NULL);
             sendClientRequest(cacheMessage, CACHE_SERVER_PORT, NULL);
         }
