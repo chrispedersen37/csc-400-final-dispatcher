@@ -26,9 +26,10 @@ char** tokenizeInput(char *buffer) {
     strcpy(inputTokens[0], token);
 
     token = strtok(NULL, "");
-    inputTokens[1] = malloc(strlen(token) + 1);
-    strcpy(inputTokens[1], token);
-
+    if (token != NULL) {
+        inputTokens[1] = malloc(strlen(token) + 1);
+        strcpy(inputTokens[1], token);
+    }
     return inputTokens;
 }
 
@@ -140,21 +141,17 @@ void * processClientRequest(void * request) {
             snprintf(fileServerMessage, sizeof(fileServerMessage), "read %s", restOfInput);
             sendClientRequest(cacheMessage, CACHE_SERVER_PORT, response);
             if (strcmp(response, "0:\n") == 0) {
-                printf("sending to fs...");
                 sendClientRequest(fileServerMessage, FILE_SERVER_PORT, response);
                 write(connectionToClient, response, strlen(response));
             } else if (strcmp(response, "0:\n") != 0) {
-                printf("sending to network...");
                 write(connectionToClient, response, strlen(response));
             }
-            printf("response was: %s", response);
         } else if (strcmp(operation, d) == 0) {
             snprintf(fileServerMessage, sizeof(fileServerMessage), "rm %s", restOfInput);
             snprintf(cacheMessage, sizeof(cacheMessage), "delete %s", restOfInput);
             sendClientRequest(fileServerMessage, FILE_SERVER_PORT, NULL);
             sendClientRequest(cacheMessage, CACHE_SERVER_PORT, NULL);
         }
-        printf("skipped sending :(");
     }
 
     // Zero out the receive line so we do not get artifacts from before
